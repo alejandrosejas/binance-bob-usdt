@@ -2,6 +2,10 @@
 
 A real-time price tracking application for the Boliviano (BOB) to USDT trading pair on Binance P2P market. This project provides a visual and interactive way to monitor price trends and ranges in the Bolivian cryptocurrency market.
 
+## 🚀 Live Demo
+
+Visit the live application at: [https://alejandrosejas.github.io/binance-bob-usdt](https://alejandrosejas.github.io/binance-bob-usdt)
+
 ![App Screenshot](media/app_screenshot.png)
 
 ## 🌟 Features
@@ -52,9 +56,6 @@ A real-time price tracking application for the Boliviano (BOB) to USDT trading p
   - GitHub Pages (Frontend)
   - Render.com (Backend)
 
-## 🚀 Live Demo
-
-Visit the live application at: https://alejosejas.github.io/binance-bob-usdt/
 
 ## 💻 Development
 
