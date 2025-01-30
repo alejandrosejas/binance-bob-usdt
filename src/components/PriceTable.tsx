@@ -1,46 +1,73 @@
-import { PriceData } from '../services/binanceApi';
+import { DetailedPriceData } from "../hooks/usePriceData";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface PriceTableProps {
-  priceHistory: PriceData[];
+  priceHistory: DetailedPriceData[];
   loading: boolean;
 }
 
 export const PriceTable = ({ priceHistory, loading }: PriceTableProps) => {
-  const getLatestPrice = (tradeType: 'BUY' | 'SELL') => {
-    return priceHistory
-      .filter(data => data.tradeType === tradeType)
-      .slice(-1)[0]?.price || 0;
+  const getLatestPrice = (tradeType: "BUY" | "SELL") => {
+    return priceHistory.filter((data) => data.tradeType === tradeType).slice(-1)[0]?.price || 0;
   };
 
-  return (
-    <div className="w-full max-w-2xl mx-auto bg-white rounded-lg shadow-sm overflow-hidden transition-all duration-200">
-      <div className="px-6 py-4 border-b border-gray-100">
-        <h2 className="text-lg font-semibold text-gray-800">Latest Prices</h2>
-      </div>
-      <div className="p-6">
-        <div className="grid grid-cols-2 gap-4">
-          <div className="p-4 rounded-lg bg-gray-50 transition-all duration-200">
-            <div className="text-sm text-gray-500 mb-1">Buy Price</div>
-            <div className="text-2xl font-semibold text-green-600">
-              {loading ? (
-                <div className="animate-pulse bg-gray-200 h-8 w-24 rounded"></div>
-              ) : (
-                `${getLatestPrice('BUY')} BOB`
-              )}
-            </div>
+  const getLatestRange = (tradeType: "BUY" | "SELL") => {
+    return priceHistory.filter((data) => data.tradeType === tradeType).slice(-1)[0]?.range || { highest: 0, lowest: 0 };
+  };
+
+  const PriceDisplay = ({ type, price, range }: { type: "BUY" | "SELL"; price: number; range: { highest: number; lowest: number } }) => (
+    <Card className="relative">
+      <CardHeader className="pb-2">
+        <CardTitle className="flex items-center justify-between">
+          <span>{type === "BUY" ? "Buy Price" : "Sell Price"}</span>
+          <Badge variant={type === "BUY" ? "default" : "destructive"}>{type}</Badge>
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-4">
+          <div>
+            <div className="text-sm font-medium text-gray-500">Current Price</div>
+            <div className={`text-2xl font-bold ${type === "BUY" ? "text-green-600" : "text-red-600"}`}>{price.toFixed(2)} BOB</div>
           </div>
-          <div className="p-4 rounded-lg bg-gray-50 transition-all duration-200">
-            <div className="text-sm text-gray-500 mb-1">Sell Price</div>
-            <div className="text-2xl font-semibold text-red-600">
-              {loading ? (
-                <div className="animate-pulse bg-gray-200 h-8 w-24 rounded"></div>
-              ) : (
-                `${getLatestPrice('SELL')} BOB`
-              )}
-            </div>
-          </div>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Range</TableHead>
+                <TableHead className="text-right">Price</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow>
+                <TableCell className="font-medium">Highest</TableCell>
+                <TableCell className="text-right">{range.highest.toFixed(2)} BOB</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell className="font-medium">Lowest</TableCell>
+                <TableCell className="text-right">{range.lowest.toFixed(2)} BOB</TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
         </div>
+      </CardContent>
+    </Card>
+  );
+
+  if (loading) {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <Skeleton className="h-[300px] w-full" />
+        <Skeleton className="h-[300px] w-full" />
       </div>
+    );
+  }
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <PriceDisplay type="BUY" price={getLatestPrice("BUY")} range={getLatestRange("BUY")} />
+      <PriceDisplay type="SELL" price={getLatestPrice("SELL")} range={getLatestRange("SELL")} />
     </div>
   );
 };

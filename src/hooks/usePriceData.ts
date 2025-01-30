@@ -1,28 +1,35 @@
-import { useState, useEffect } from 'react';
-import { fetchPrice, PriceData } from '../services/binanceApi';
+import { useState, useEffect } from "react";
+import { fetchPrice, fetchPriceRange, PriceData, PriceRange } from "../services/binanceApi";
+import { loadPriceHistory, savePriceHistory } from "../lib/storage";
+
+export interface DetailedPriceData extends PriceData {
+  range: PriceRange;
+}
 
 export const usePriceData = (refreshInterval = 30000) => {
-  const [priceHistory, setPriceHistory] = useState<PriceData[]>([]);
+  const [priceHistory, setPriceHistory] = useState<DetailedPriceData[]>(() => loadPriceHistory());
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const fetchPrices = async () => {
     try {
-      const [buyPrice, sellPrice] = await Promise.all([
-        fetchPrice('BUY'),
-        fetchPrice('SELL')
-      ]);
+      const [buyPrice, sellPrice, buyRange, sellRange] = await Promise.all([fetchPrice("BUY"), fetchPrice("SELL"), fetchPriceRange("BUY"), fetchPriceRange("SELL")]);
 
       const timestamp = Date.now();
-      const newData: PriceData[] = [
-        { price: buyPrice, timestamp, tradeType: 'BUY' },
-        { price: sellPrice, timestamp, tradeType: 'SELL' }
+      const newData: DetailedPriceData[] = [
+        { price: buyPrice, timestamp, tradeType: "BUY", range: buyRange },
+        { price: sellPrice, timestamp, tradeType: "SELL", range: sellRange },
       ];
 
-      setPriceHistory(prev => [...prev, ...newData]);
+      setPriceHistory((prev) => {
+        const updated = [...prev, ...newData];
+        savePriceHistory(updated);
+        return updated;
+      });
+
       setError(null);
     } catch (err) {
-      setError('Failed to fetch price data');
+      setError("Failed to fetch price data");
       console.error(err);
     } finally {
       setLoading(false);
