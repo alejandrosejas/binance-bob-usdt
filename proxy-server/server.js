@@ -22,6 +22,11 @@ app.get('/health', (req, res) => {
 
 // Proxy endpoint
 app.post('/api/binance/p2p', async (req, res) => {
+  // Set CORS headers explicitly
+  res.setHeader('Access-Control-Allow-Origin', 'https://alejandrosejas.github.io');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, Accept');
+
   try {
     const response = await axios.post(
       'https://p2p.binance.com/bapi/c2c/v2/friendly/c2c/adv/search',
