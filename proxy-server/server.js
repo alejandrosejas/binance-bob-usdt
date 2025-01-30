@@ -21,7 +21,9 @@ app.use(cors({
   origin: 'https://alejandrosejas.github.io',
   methods: ['GET', 'POST', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
-  credentials: false
+  credentials: false,
+  preflightContinue: false,
+  optionsSuccessStatus: 204
 }));
 
 app.use(express.json());
@@ -32,6 +34,12 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok' });
 });
 
+// Explicit OPTIONS handler for the proxy endpoint
+app.options('/api/binance/p2p', (req, res) => {
+  console.log('OPTIONS request received for /api/binance/p2p');
+  res.status(204).end();
+});
+
 // Proxy endpoint
 app.post('/api/binance/p2p', async (req, res) => {
   console.log('Received P2P request:', {
@@ -39,11 +47,6 @@ app.post('/api/binance/p2p', async (req, res) => {
     headers: req.headers,
     body: req.body
   });
-
-  // Set CORS headers explicitly
-  res.setHeader('Access-Control-Allow-Origin', 'https://alejandrosejas.github.io');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, Accept');
 
   try {
     console.log('Making request to Binance API...');
@@ -82,6 +85,15 @@ app.use((err, req, res, next) => {
   res.status(500).json({
     error: 'Internal server error',
     details: err.message
+  });
+});
+
+// Add catch-all route handler for undefined routes
+app.use('*', (req, res) => {
+  console.log('404 - Route not found:', req.method, req.originalUrl);
+  res.status(404).json({
+    error: 'Not Found',
+    message: `Cannot ${req.method} ${req.originalUrl}`
   });
 });
 
