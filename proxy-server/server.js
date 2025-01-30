@@ -10,12 +10,14 @@ app.use(cors({
   origin: [
     'http://localhost:8080',
     'http://localhost:5173',
-    'https://alejandrosejas.github.io'
+    'https://alejandrosejas.github.io',
+    'https://alejandrosejas.github.io/'
   ],
   methods: ['GET', 'POST', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
-  credentials: true,
-  optionsSuccessStatus: 200
+  credentials: false,
+  optionsSuccessStatus: 200,
+  exposedHeaders: ['Access-Control-Allow-Origin']
 }));
 
 // Handle preflight requests
