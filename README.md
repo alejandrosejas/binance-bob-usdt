@@ -2,9 +2,14 @@
 
 A real-time price tracking application for the Boliviano (BOB) to USDT trading pair on Binance P2P market. This project provides a visual and interactive way to monitor price trends and ranges in the Bolivian cryptocurrency market.
 
+![App Screenshot](media/app_screenshot.png)
+
 ## 🌟 Features
 
-- **Real-time Price Tracking**: Monitor BOB/USDT buy and sell prices from Binance P2P
+- **Real-time Price Tracking**:
+  - Automatic server-side price updates every minute
+  - Server-Sent Events (SSE) for instant client updates
+  - Synchronized countdown timer showing next update time
 - **Interactive Charts**:
   - Zoom-capable price history visualization
   - Multiple time range options (1h, 3h, 6h, 12h, 24h, All)
@@ -14,21 +19,38 @@ A real-time price tracking application for the Boliviano (BOB) to USDT trading p
   - Current buy/sell prices
   - Historical high/low ranges
   - Price history persistence
-- **Responsive Design**: Works seamlessly on both desktop and mobile devices
+  - Storage usage monitoring
+- **Responsive Design**:
+  - Optimized for mobile, tablet, and desktop
+  - Adaptive layout and components
+  - Touch-friendly interactions
+
+## 🏗️ Architecture
+
+- **Frontend**: React SPA with TypeScript
+- **Backend**: Express.js proxy server
+- **Data Flow**:
+  1. Server fetches prices from Binance P2P every minute
+  2. Price data is stored in-memory with 1000 points history
+  3. Updates are pushed to clients via SSE
+  4. Clients maintain local storage backup
 
 ## 🛠️ Tech Stack
 
-- **Frontend Framework**: React with TypeScript
-- **Styling**:
+- **Frontend**:
+  - React + TypeScript
   - Tailwind CSS
   - Shadcn/ui components
-  - Lucide icons
-- **State Management**: React Hooks
-- **Data Visualization**:
-  - Recharts for interactive charts
+  - Recharts for data visualization
   - Framer Motion for animations
-- **Build Tool**: Vite
-- **Deployment**: GitHub Pages
+- **Backend**:
+  - Express.js
+  - Server-Sent Events
+  - Axios for API requests
+- **Build & Deploy**:
+  - Vite
+  - GitHub Pages (Frontend)
+  - Render.com (Backend)
 
 ## 🚀 Live Demo
 
@@ -46,12 +68,21 @@ Visit the live application at: https://alejosejas.github.io/binance-bob-usdt/
 2. Install dependencies:
 
    ```bash
+   # Install frontend dependencies
+   npm install
+
+   # Install backend dependencies
+   cd proxy-server
    npm install
    ```
 
-3. Start the development server:
+3. Start the development servers:
 
    ```bash
+   # Start frontend (in root directory)
+   npm run dev
+
+   # Start backend (in proxy-server directory)
    npm run dev
    ```
 
@@ -63,12 +94,16 @@ Visit the live application at: https://alejosejas.github.io/binance-bob-usdt/
 ## 📝 Project Structure
 
 ```
-src/
-├── components/         # React components
-├── hooks/             # Custom React hooks
-├── lib/               # Utility functions
-├── pages/             # Page components
-└── types/             # TypeScript type definitions
+├── src/                  # Frontend source code
+│   ├── components/       # React components
+│   ├── hooks/           # Custom React hooks
+│   ├── lib/             # Utility functions
+│   ├── pages/           # Page components
+│   └── services/        # API services
+├── proxy-server/        # Backend server code
+│   ├── server.js        # Express server setup
+│   └── package.json     # Backend dependencies
+└── media/              # Screenshots and assets
 ```
 
 ## 🤝 Contributing
