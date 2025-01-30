@@ -28,10 +28,29 @@ app.use(cors({
 
 app.use(express.json());
 
+// Root path handler
+app.get('/', (req, res) => {
+  console.log('Root path requested');
+  res.json({ 
+    status: 'ok',
+    message: 'Binance P2P Proxy Server',
+    endpoints: {
+      health: '/health',
+      proxy: '/api/binance/p2p'
+    }
+  });
+});
+
 // Health check endpoint
 app.get('/health', (req, res) => {
   console.log('Health check requested');
   res.json({ status: 'ok' });
+});
+
+// Handle HEAD requests for root and health endpoints
+app.head(['/', '/health'], (req, res) => {
+  console.log('HEAD request received for:', req.path);
+  res.status(200).end();
 });
 
 // Explicit OPTIONS handler for the proxy endpoint
