@@ -2,11 +2,12 @@
   "name": "binance-bob-usdt",
   "version": "1.0.0",
   "private": true,
-  "workspaces": [
-    "proxy-server"
-  ],
+  "engines": {
+    "node": "18.x"
+  },
   "scripts": {
     "start": "cd proxy-server && node server.js",
-    "build": "cd proxy-server && npm install"
+    "build": "cd proxy-server && npm install",
+    "dev": "cd proxy-server && node server.js"
   }
 }
