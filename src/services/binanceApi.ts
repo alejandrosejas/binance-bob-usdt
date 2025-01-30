@@ -1,6 +1,6 @@
 import axios, { AxiosError } from "axios";
 
-const BASE_URL = import.meta.env.VITE_API_URL + "/api/binance/p2p";
+const BASE_URL = import.meta.env.VITE_API_URL;
 
 export interface BinanceRequestData {
   fiat: string;
@@ -68,63 +68,35 @@ const defaultData: BinanceRequestData = {
 };
 
 export const fetchPrice = async (tradeType: "BUY" | "SELL"): Promise<number> => {
-  const config = {
-    method: "post",
-    url: BASE_URL,
-    headers: {
-      accept: "application/json",
-      "content-type": "application/json",
-    },
-    data: { ...defaultData, tradeType },
-  };
-
   try {
-    const response = await axios.request(config);
-    const firstPrice = response.data.data[0]?.adv?.price;
-    return parseFloat(firstPrice) || 0;
+    const response = await axios.get(`${BASE_URL}/api/prices/latest`);
+    const prices = response.data;
+    const priceData = prices.find((p: DetailedPriceData) => p.tradeType === tradeType);
+    return priceData?.price || 0;
   } catch (error: unknown) {
-    if (error instanceof AxiosError) {
-      if (error.response?.status === 403) {
-        console.error("Access error:", error);
-        throw new Error("Unable to access Binance API. Please try again later.");
-      }
-    }
     console.error("Error fetching price:", error);
     throw error;
   }
 };
 
 export const fetchPriceRange = async (tradeType: "BUY" | "SELL"): Promise<PriceRange> => {
-  const config = {
-    method: "post",
-    url: BASE_URL,
-    headers: {
-      accept: "application/json",
-      "content-type": "application/json",
-    },
-    data: { ...defaultData, tradeType },
-  };
-
   try {
-    const response = await axios.request<BinanceResponse>(config);
-    const prices = response.data.data.map((item) => parseFloat(item.adv.price)).filter((price: number) => !isNaN(price));
-
-    if (prices.length === 0) {
-      return { highest: 0, lowest: 0 };
-    }
-
-    return {
-      highest: Math.max(...prices),
-      lowest: Math.min(...prices),
-    };
+    const response = await axios.get(`${BASE_URL}/api/prices/latest`);
+    const prices = response.data;
+    const priceData = prices.find((p: DetailedPriceData) => p.tradeType === tradeType);
+    return priceData?.range || { highest: 0, lowest: 0 };
   } catch (error: unknown) {
-    if (error instanceof AxiosError) {
-      if (error.response?.status === 403) {
-        console.error("Access error:", error);
-        throw new Error("Unable to access Binance API. Please try again later.");
-      }
-    }
     console.error("Error fetching price range:", error);
+    throw error;
+  }
+};
+
+export const fetchPriceHistory = async (): Promise<DetailedPriceData[]> => {
+  try {
+    const response = await axios.get(`${BASE_URL}/api/prices/history`);
+    return response.data;
+  } catch (error: unknown) {
+    console.error("Error fetching price history:", error);
     throw error;
   }
 };

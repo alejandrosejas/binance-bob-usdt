@@ -106,6 +106,120 @@ app.post("/api/binance/p2p", async (req, res) => {
   }
 });
 
+// In-memory storage for price data
+let priceHistory = [];
+const MAX_HISTORY_LENGTH = 1000; // Keep last 1000 price points
+const FETCH_INTERVAL = 60000; // 60 seconds
+
+// Function to fetch prices from Binance
+async function fetchPrices() {
+  const fetchPrice = async (tradeType) => {
+    try {
+      const response = await axios.post(
+        "https://p2p.binance.com/bapi/c2c/v2/friendly/c2c/adv/search",
+        {
+          fiat: "BOB",
+          page: 1,
+          rows: 20,
+          tradeType,
+          asset: "USDT",
+          countries: [],
+          proMerchantAds: false,
+          shieldMerchantAds: false,
+          filterType: "all",
+          periods: [],
+          additionalKycVerifyFilter: 0,
+          publisherType: "merchant",
+          payTypes: [],
+          classifies: ["mass", "profession", "fiat_trade"],
+          tradedWith: false,
+          followed: false,
+        },
+        {
+          headers: {
+            accept: "*/*",
+            "content-type": "application/json",
+            origin: "https://p2p.binance.com",
+            "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36",
+          },
+        }
+      );
+
+      const prices = response.data.data.map((item) => parseFloat(item.adv.price)).filter((price) => !isNaN(price));
+      if (prices.length === 0) return null;
+
+      return {
+        price: prices[0],
+        range: {
+          highest: Math.max(...prices),
+          lowest: Math.min(...prices),
+        },
+      };
+    } catch (error) {
+      console.error(`Error fetching ${tradeType} price:`, error.message);
+      return null;
+    }
+  };
+
+  const [buyData, sellData] = await Promise.all([fetchPrice("BUY"), fetchPrice("SELL")]);
+
+  if (buyData && sellData) {
+    const timestamp = Date.now();
+    const newPrices = [
+      { ...buyData, timestamp, tradeType: "BUY" },
+      { ...sellData, timestamp, tradeType: "SELL" },
+    ];
+
+    priceHistory = [...priceHistory, ...newPrices].slice(-MAX_HISTORY_LENGTH);
+    console.log("Price data updated:", newPrices);
+
+    // Emit event for SSE clients
+    process.emit("priceUpdate");
+  }
+}
+
+// Start continuous price fetching
+console.log("Starting continuous price fetching every 60 seconds");
+fetchPrices(); // Initial fetch
+setInterval(fetchPrices, FETCH_INTERVAL);
+
+// Track SSE connections for data streaming
+app.get("/api/prices/stream", (req, res) => {
+  res.setHeader("Content-Type", "text/event-stream");
+  res.setHeader("Cache-Control", "no-cache");
+  res.setHeader("Connection", "keep-alive");
+
+  // Send initial data
+  const latestPrices = priceHistory.slice(-2);
+  res.write(`data: ${JSON.stringify(latestPrices)}\n\n`);
+
+  // Send updates when new prices are fetched
+  const sendUpdate = () => {
+    const latestPrices = priceHistory.slice(-2);
+    res.write(`data: ${JSON.stringify(latestPrices)}\n\n`);
+  };
+
+  // Listen for price updates
+  const updateListener = () => sendUpdate();
+  process.on("priceUpdate", updateListener);
+
+  // Cleanup listener on client disconnect
+  req.on("close", () => {
+    process.removeListener("priceUpdate", updateListener);
+  });
+});
+
+// Endpoint to get latest price data
+app.get("/api/prices/latest", (req, res) => {
+  const latestPrices = priceHistory.slice(-2);
+  res.json(latestPrices);
+});
+
+// Endpoint to get price history
+app.get("/api/prices/history", (req, res) => {
+  res.json(priceHistory);
+});
+
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error("Express error handler:", err);
