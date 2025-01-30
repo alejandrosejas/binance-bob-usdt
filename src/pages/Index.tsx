@@ -2,18 +2,21 @@ import { usePriceData } from '../hooks/usePriceData';
 import { PriceTable } from '../components/PriceTable';
 import { PriceChart } from '../components/PriceChart';
 import { useToast } from '../hooks/use-toast';
+import { useEffect } from 'react';
 
 const Index = () => {
   const { priceHistory, loading, error } = usePriceData();
   const { toast } = useToast();
 
-  if (error) {
-    toast({
-      title: "Error",
-      description: error,
-      variant: "destructive",
-    });
-  }
+  useEffect(() => {
+    if (error) {
+      toast({
+        title: "Error",
+        description: error,
+        variant: "destructive",
+      });
+    }
+  }, [error, toast]);
 
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
