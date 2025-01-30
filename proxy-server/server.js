@@ -17,9 +17,27 @@ process.on("unhandledRejection", (reason, promise) => {
 });
 
 // Enable CORS middleware with specific options
-app.use(cors()); // Allow all origins temporarily for testing
+app.use(
+  cors({
+    origin: "https://alejandrosejas.github.io",
+    methods: ["GET", "POST", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "Accept", "Origin"],
+    exposedHeaders: ["Access-Control-Allow-Origin"],
+    credentials: false,
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
+  })
+);
 
 app.use(express.json());
+
+// Add CORS headers to all responses
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "https://alejandrosejas.github.io");
+  res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization, Accept, Origin");
+  next();
+});
 
 // Root path handler
 app.get("/", (req, res) => {
