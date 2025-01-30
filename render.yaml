@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: binance-bob-usdt-proxy
+    name: binance-bob-usdt
     env: node
     runtime: node
     nodeVersion: 18
