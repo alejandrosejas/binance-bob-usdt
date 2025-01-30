@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: binance-bob-usdt-proxy
+    env: node
+    buildCommand: npm install
+    startCommand: node server.js
+    envVars:
+      - key: PORT
+        value: 10000

@@ -1,6 +1,6 @@
 import axios, { AxiosError } from "axios";
 
-const BASE_URL = "http://localhost:3001/api/binance/p2p";
+const BASE_URL = import.meta.env.VITE_API_URL + "/api/binance/p2p";
 
 export interface BinanceRequestData {
   fiat: string;

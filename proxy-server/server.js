@@ -3,14 +3,24 @@ const cors = require('cors');
 const axios = require('axios');
 
 const app = express();
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 
 // Enable CORS for your React app
 app.use(cors({
-  origin: 'http://localhost:8080' // Updated to match your Vite server port
+  origin: [
+    'http://localhost:8080',
+    'https://alejosejas.github.io'
+  ],
+  methods: ['GET', 'POST'],
+  credentials: true
 }));
 
 app.use(express.json());
+
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.json({ status: 'ok' });
+});
 
 // Proxy endpoint
 app.post('/api/binance/p2p', async (req, res) => {
@@ -37,5 +47,5 @@ app.post('/api/binance/p2p', async (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Proxy server running on http://localhost:${PORT}`);
+  console.log(`Proxy server running on port ${PORT}`);
 }); 
