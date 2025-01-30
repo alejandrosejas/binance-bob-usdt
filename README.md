@@ -1,69 +1,84 @@
-# Welcome to your Lovable project
+# Binance BOB/USDT Price Tracker
 
-## Project info
+A real-time price tracking application for the Boliviano (BOB) to USDT trading pair on Binance P2P market. This project provides a visual and interactive way to monitor price trends and ranges in the Bolivian cryptocurrency market.
 
-**URL**: https://lovable.dev/projects/fe15061f-e332-43db-9415-bd857f04300e
+## 🌟 Features
 
-## How can I edit this code?
+- **Real-time Price Tracking**: Monitor BOB/USDT buy and sell prices from Binance P2P
+- **Interactive Charts**:
+  - Zoom-capable price history visualization
+  - Multiple time range options (1h, 3h, 6h, 12h, 24h, All)
+  - Price and range view modes
+  - Fullscreen support
+- **Detailed Price Information**:
+  - Current buy/sell prices
+  - Historical high/low ranges
+  - Price history persistence
+- **Responsive Design**: Works seamlessly on both desktop and mobile devices
 
-There are several ways of editing your application.
+## 🛠️ Tech Stack
 
-**Use Lovable**
+- **Frontend Framework**: React with TypeScript
+- **Styling**:
+  - Tailwind CSS
+  - Shadcn/ui components
+  - Lucide icons
+- **State Management**: React Hooks
+- **Data Visualization**:
+  - Recharts for interactive charts
+  - Framer Motion for animations
+- **Build Tool**: Vite
+- **Deployment**: GitHub Pages
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/fe15061f-e332-43db-9415-bd857f04300e) and start prompting.
+## 🚀 Live Demo
 
-Changes made via Lovable will be committed automatically to this repo.
+Visit the live application at: https://alejosejas.github.io/binance-bob-usdt/
 
-**Use your preferred IDE**
+## 💻 Development
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+1. Clone the repository:
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+   ```bash
+   git clone https://github.com/alejosejas/binance-bob-usdt.git
+   cd binance-bob-usdt
+   ```
 
-Follow these steps:
+2. Install dependencies:
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+   ```bash
+   npm install
+   ```
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+3. Start the development server:
 
-# Step 3: Install the necessary dependencies.
-npm i
+   ```bash
+   npm run dev
+   ```
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+4. Build for production:
+   ```bash
+   npm run build
+   ```
+
+## 📝 Project Structure
+
+```
+src/
+├── components/         # React components
+├── hooks/             # Custom React hooks
+├── lib/               # Utility functions
+├── pages/             # Page components
+└── types/             # TypeScript type definitions
 ```
 
-**Edit a file directly in GitHub**
+## 🤝 Contributing
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+Feel free to open issues and pull requests for any improvements you'd like to contribute.
 
-**Use GitHub Codespaces**
+## 📄 License
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+MIT License - feel free to use this project for your own purposes.
 
-## What technologies are used for this project?
+## 👨‍💻 Author
 
-This project is built with .
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/fe15061f-e332-43db-9415-bd857f04300e) and click on Share -> Publish.
-
-## I want to use a custom domain - is that possible?
-
-We don't support custom domains (yet). If you want to deploy your project under your own domain then we recommend using Netlify. Visit our docs for more details: [Custom domains](https://docs.lovable.dev/tips-tricks/custom-domain/)
+Made with ☕️ by Alejandro Sejas
