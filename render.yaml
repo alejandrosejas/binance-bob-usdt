@@ -2,8 +2,9 @@ services:
   - type: web
     name: binance-bob-usdt-proxy
     env: node
-    buildCommand: cd proxy-server && npm install
-    startCommand: cd proxy-server && node server.js
+    rootDir: proxy-server
+    buildCommand: npm install
+    startCommand: node server.js
     envVars:
       - key: PORT
         value: 10000
