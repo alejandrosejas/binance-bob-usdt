@@ -9,11 +9,17 @@ const PORT = process.env.PORT || 3001;
 app.use(cors({
   origin: [
     'http://localhost:8080',
-    'https://alejosejas.github.io'
+    'http://localhost:5173',
+    'https://alejandrosejas.github.io'
   ],
-  methods: ['GET', 'POST'],
-  credentials: true
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
+  credentials: true,
+  optionsSuccessStatus: 200
 }));
+
+// Handle preflight requests
+app.options('*', cors());
 
 app.use(express.json());
 
@@ -30,9 +36,10 @@ app.post('/api/binance/p2p', async (req, res) => {
       req.body,
       {
         headers: {
-          'accept': 'application/json',
+          'accept': '*/*',
           'content-type': 'application/json',
-          'origin': 'https://p2p.binance.com'
+          'origin': 'https://p2p.binance.com',
+          'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36'
         }
       }
     );
