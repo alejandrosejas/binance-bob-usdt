@@ -19,7 +19,7 @@ process.on("unhandledRejection", (reason, promise) => {
 // Enable CORS middleware with specific options
 app.use(
   cors({
-    origin: ["https://alejandrosejas.github.io/binance-bob-usdt", "https://alejandrosejas.github.io"],
+    origin: ["https://alejandrosejas.github.io", "https://alejandrosejas.github.io/binance-bob-usdt", "http://localhost:5173"],
     methods: ["GET", "POST", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization", "Accept", "Origin"],
     credentials: false,
@@ -28,6 +28,17 @@ app.use(
 );
 
 app.use(express.json());
+
+// Log all requests for debugging
+app.use((req, res, next) => {
+  console.log("Incoming request:", {
+    method: req.method,
+    url: req.url,
+    origin: req.headers.origin,
+    referer: req.headers.referer,
+  });
+  next();
+});
 
 // Root path handler
 app.get("/", (req, res) => {
