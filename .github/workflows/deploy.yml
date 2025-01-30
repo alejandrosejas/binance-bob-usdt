@@ -30,11 +30,15 @@ jobs:
           node-version: 18
           cache: "npm"
 
-      - name: Install dependencies
+      - name: Install frontend dependencies
         run: npm install
+        working-directory: ./
 
-      - name: Build
+      - name: Build frontend
         run: npm run build
+        working-directory: ./
+        env:
+          VITE_API_URL: https://binance-bob-usdt-proxy.onrender.com
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
