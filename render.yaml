@@ -4,8 +4,8 @@ services:
     env: node
     runtime: node
     nodeVersion: 18
-    buildCommand: cd /opt/render/project/src && cd proxy-server && npm install
-    startCommand: cd /opt/render/project/src && cd proxy-server && npm start
+    buildCommand: cd proxy-server && npm install
+    startCommand: cd proxy-server && npm start
     envVars:
       - key: PORT
         value: 10000
