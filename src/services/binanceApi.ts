@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BASE_URL = 'https://p2p.binance.com/bapi/c2c/v2/friendly/c2c/adv/search';
+const BASE_URL = 'https://corsproxy.io/?' + encodeURIComponent('https://p2p.binance.com/bapi/c2c/v2/friendly/c2c/adv/search');
 
 export interface BinanceRequestData {
   fiat: string;
@@ -52,10 +52,7 @@ export const fetchPrice = async (tradeType: 'BUY' | 'SELL'): Promise<number> => 
     url: BASE_URL,
     headers: {
       'accept': 'application/json',
-      'content-type': 'application/json',
-      'origin': 'https://p2p.binance.com',
-      'referer': `https://p2p.binance.com/trade/all-payments/USDT?fiat=BOB`,
-      'user-agent': 'Mozilla/5.0'
+      'content-type': 'application/json'
     },
     data: { ...defaultData, tradeType }
   };
